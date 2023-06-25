@@ -37,15 +37,15 @@
 #define LENGTH_MAX_BITS		9
 
 static const uint16_t length_offset[] = {
+	2,
 	3,
-	4,
-	6,
-	10,
-	18,
-	34,
-	66,
-	130,
-	258
+	5,
+	9,
+	17,
+	33,
+	65,
+	129,
+	257
 };
 
 static int ds_check_magic(struct bitreader *reader)
@@ -152,8 +152,6 @@ static int ds_decode(struct bitreader *reader, uint8_t *output, size_t *index, s
 	ret = ds_get_length(reader, &length);
 	if (ret < 0)
 		return ret;
-
-	length--;
 
 	if (*index + length > output_length)
 		return -EINVAL;
