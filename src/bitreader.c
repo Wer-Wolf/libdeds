@@ -5,79 +5,69 @@
  * Copyright (C) 2023 Armin Wolf <W_Armin@gmx.de>
  */
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 #include <errno.h>
 
 #include <bitreader.h>
 
-#define PREFETCH_THRESHOLD	16
-
-static const uint16_t mask[] = {
-	0x0000,
-	0x0001,
-	0x0003,
-	0x0007,
-	0x000F,
-	0x001F,
-	0x003F,
-	0x007F,
-	0x00FF,
-	0x01FF,
-	0x03FF,
-	0x07FF,
-	0x0FFF,
-	0x1FFF,
-	0x3FFF,
-	0x7FFF,
-	0xFFFF
-};
+#define MAX_BITS	16
 
 void bitreader_init(struct bitreader *reader, uint8_t *buffer, size_t buffer_size)
 {
-	reader->prefetch = 0;
-	reader->prefetched_bits = 0;
 	reader->buffer = buffer;
 	reader->buffer_size = buffer_size;
+	reader->bit_offset = 0;
 	reader->index = 0;
 }
 
-static void prefetch(struct bitreader *reader)
+static size_t available_bytes(struct bitreader *reader)
 {
-	uint8_t val;
+	return reader->buffer_size - reader->index;
+}
 
-	if (reader->prefetched_bits >= PREFETCH_THRESHOLD)
-		return;
+static uint8_t required_bytes(struct bitreader *reader, uint8_t bits)
+{
+	uint8_t total_bits = reader->bit_offset + bits;
+	uint8_t bytes = total_bits / 8;
 
-	for (int i = 0; i < 2; i++) {
-		if (reader->index >= reader->buffer_size)
-			break;
+	if (total_bits % 8)
+		bytes++;
 
-		val = reader->buffer[reader->index];
-		reader->index++;
-		reader->prefetch |= val << (reader->prefetched_bits);
-		reader->prefetched_bits += 8;
-	}
+	return bytes;
 }
 
 int read_bits(struct bitreader *reader, uint16_t *bits, uint8_t num_bits)
 {
-	prefetch(reader);
+	uint32_t value;
+	uint8_t bytes;
 
-	if (num_bits > PREFETCH_THRESHOLD)
+	if (num_bits > MAX_BITS)
 		return -EINVAL;
 
-	if (reader->prefetched_bits < num_bits)
+	bytes = required_bytes(reader, num_bits);
+
+	if (available_bytes(reader) < bytes)
 		return -ENODATA;
 
-	*bits = (reader->prefetch & mask[num_bits]);
-	reader->prefetch >>= num_bits;
-	reader->prefetched_bits -= num_bits;
+	memcpy(&value, &reader->buffer[reader->index], bytes);
+
+	value >>= reader->bit_offset;
+	*bits = value & (0xffff >> (MAX_BITS - num_bits));
+
+	reader->bit_offset += num_bits;
+	reader->index += reader->bit_offset / 8;
+	reader->bit_offset %= 8;
 
 	return 0;
 }
 
-size_t remaining_bits(struct bitreader *reader)
+bool bits_available(struct bitreader *reader, uint8_t bits)
 {
-	return reader->prefetched_bits + (reader->buffer_size - reader->index) * 8;
+	if (bits > MAX_BITS)
+		return -EINVAL;
+
+	return !(available_bytes(reader) < required_bytes(reader, bits));
 }

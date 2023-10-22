@@ -137,7 +137,7 @@ static int ds_decode(struct bitreader *reader, uint8_t *output, size_t *index, s
 		return -EINVAL;
 
 	if (offset == OFFSET_SYNC) {
-		if (remaining_bits(reader) < 16)
+		if (!bits_available(reader, 16))
 			return 1;
 
 		if (*index % 512)
