@@ -36,7 +36,7 @@ int main(void)
 		}
 
 		if (val != bits[i]) {
-			fprintf(stderr, "Bit error at iteration %d: %s\n", i, strerror(-ret));
+			fprintf(stderr, "Bit error at iteration %d: 0x%x != 0x%x\n", i, val, bits[i]);
 			exit(EXIT_FAILURE);
 		}
 	}
