@@ -64,6 +64,23 @@ int read_bits(struct bitreader *reader, uint16_t *bits, uint8_t num_bits)
 	return 0;
 }
 
+int ffs_bits(struct bitreader *reader)
+{
+	size_t available;
+	uint32_t value;
+
+	available = available_bytes(reader);
+	if (available > MAX_BITS / 8 + 1)
+		available = MAX_BITS / 8 + 1;
+
+	memcpy(&value, &reader->buffer[reader->index], available);
+
+	value >>= reader->bit_offset;
+	value &= 0xffff;
+
+	return ffs(value);
+}
+
 bool bits_available(struct bitreader *reader, uint8_t bits)
 {
 	if (bits > MAX_BITS)
