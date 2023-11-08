@@ -53,4 +53,6 @@ value.
 
 #### Length value
 
-The length value starts with a number of zero bits (between 0 and 8), terminated by a one bit, which sginal the length of the following length value (in bits). For each length (0, 1, 2, 3, 4, 5, 6, 7,8), an offset needs to be applied (2, 3, 5, 9, 17, 33, 65, 129, 257).
+The length value starts with a number of zero bits (between 0 and 8), terminated by a one bit. This the base value,
+which determines the length of the next value (value length in bits = number of zero bits in base value). The sum
+of both values plus one forms the final length value.
