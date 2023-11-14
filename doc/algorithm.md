@@ -56,3 +56,36 @@ value.
 The length value starts with a number of zero bits (between 0 and 8), terminated by a one bit. This the base value,
 which determines the length of the next value (value length in bits = number of zero bits in base value). The sum
 of both values plus one forms the final length value.
+
+### Format (bits from left to right)
+
+```
+Bitstream: <Header> <Payload>
+
+Header: <Magic> <Version>
+
+Magic: <Magic Low Byte> <Magic High Byte>
+Magic High Byte: 1 1 0 0 1 0 1 0 ('S')
+Magic Low Byte: 0 0 1 0 0 0 1 0 ('D')
+
+Version <High Byte> <Low Byte>
+
+Payload: [<Tuple> <Up to 15 bits for stuffing>]
+Tuple: 0 0 <Standard Tuple> | 1 0 <Big Literal> | 0 1 <Small Literal> | 1 1 <Extended Tuple>
+
+Big/Small Literal: <b> <b> <b> <b> <b> <b> <b>
+
+Standard Tuple: <Small Offset> <Length>
+Small Offset: <b> <b> <b> <b> <b> <b>
+
+Extended Tuple: 0 <Medium Offset> <Length> | 1 <Large Offset> <Length>
+Medium Offset: <b> <b> <b> <b> <b> <b> <b> <b>
+Large Offset: <b> <b> <b> <b> <b> <b> <b> <b> <b> <b> <b> <b>
+
+Length: <Base n> <Value n>
+Base n: 0^n 1
+Value n: <b>^n
+
+Byte: <b> <b> <b> <b> <b> <b> <b> <b>
+b: 0 | 1
+```
