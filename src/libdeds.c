@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * libds - library for DoubleSpace decompression.
+ * libdeds - library for DoubleSpace decompression.
  *
  * Copyright (C) 2023 Armin Wolf <W_Armin@gmx.de>
  */
@@ -12,7 +12,7 @@
 #include <errno.h>
 
 #include <bitreader.h>
-#include <ds.h>
+#include <deds.h>
 
 #define DS_MAGIC_BITS		16
 #define DS_MAGIC		0x5344

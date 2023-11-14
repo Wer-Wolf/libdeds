@@ -1,1 +1,1 @@
-install_headers('ds.h')
+install_headers('deds.h')

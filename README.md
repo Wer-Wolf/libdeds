@@ -1,4 +1,4 @@
-# libds - library for DoubleSpace decompression
+# libdeds - library for DoubleSpace decompression
 
 This is a library implementing the DoubleSpace decompression algorithm.
 Its mainly useful nowadays for decompressing Binary MOF (bmof) files

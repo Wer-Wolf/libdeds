@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-2.0
 /*
- * test_libds - short test for decompressing with libds.
+ * test_libdeds - short test for decompressing with libdeds.
  *
  * Copyrigth (C) 2023 Armin Wolf <W_Armin@gmx.de>
  */
@@ -12,7 +12,7 @@
 #include <string.h>
 #include <errno.h>
 
-#include <ds.h>
+#include <deds.h>
 
 static uint8_t input_data[] = {
         0x44, 0x53, 0x00, 0x01, 0x1A, 0x7D, 0xDA, 0x54, 0x28, 0x54, 0xA1, 0x00,
