@@ -5,3 +5,8 @@ inc = include_directories('include')
 subdir('src')
 subdir('include')
 subdir('tests')
+
+libdeds_dep = declare_dependency(
+    include_directories: inc,
+    link_with: lib,
+)
