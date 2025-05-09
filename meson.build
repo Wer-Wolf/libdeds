@@ -1,4 +1,4 @@
-project('libdeds', 'c', license : 'GPL-2.0-or-later', version : '1.0.1')
+project('libdeds', 'c', license : 'GPL-2.0-or-later', version : '1.2.0')
 
 inc = include_directories('include')
 
