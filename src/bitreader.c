@@ -5,6 +5,7 @@
  * Copyright (C) 2023 Armin Wolf <W_Armin@gmx.de>
  */
 
+#include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -45,11 +46,9 @@ int read_bits(struct bitreader *reader, uint16_t *bits, uint8_t num_bits)
 	uint32_t value;
 	uint8_t bytes;
 
-	if (num_bits > MAX_BITS)
-		return -EINVAL;
+	assert(num_bits <= MAX_BITS);
 
 	bytes = required_bytes(reader, num_bits);
-
 	if (available_bytes(reader) < bytes)
 		return -ENODATA;
 
@@ -84,8 +83,7 @@ int ffs_bits(struct bitreader *reader)
 
 bool bits_available(struct bitreader *reader, uint8_t bits)
 {
-	if (bits > MAX_BITS)
-		return -EINVAL;
+	assert(bits <= MAX_BITS);
 
 	return !(available_bytes(reader) < required_bytes(reader, bits));
 }
