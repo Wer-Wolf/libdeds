@@ -66,8 +66,8 @@ int read_bits(struct bitreader *reader, uint16_t *bits, uint8_t num_bits)
 
 int ffs_bits(struct bitreader *reader)
 {
+	uint32_t value = 0;
 	size_t available;
-	uint32_t value;
 
 	available = available_bytes(reader);
 	if (available > MAX_BITS / 8 + 1)
