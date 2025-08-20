@@ -31,7 +31,7 @@ int main(void)
 	for (int i = 0; i < ARRAY_SIZE(bits); i++) {
 		ret = ffs_bits(&reader);
 		if (!ret) {
-			fprintf(stderr, "No set bits found at interation %d\n", i);
+			fprintf(stderr, "No set bits found at iteration %d\n", i);
 			exit(EXIT_FAILURE);
 		}
 
