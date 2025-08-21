@@ -32,7 +32,7 @@
 #define OFFSET_LARGE_BITS	12
 #define OFFSET_MEDIUM_OFFSET	64
 #define OFFSET_LARGE_OFFSET	320
-#define OFFSET_SYNC		0x113f
+#define OFFSET_SYNC		0xfff
 
 #define LENGTH_MAX_BITS		9
 
@@ -124,16 +124,6 @@ static int ds_decode(struct bitreader *reader, uint8_t *output, size_t *index, s
 	if (offset == 0)
 		return -EINVAL;
 
-	if (offset == OFFSET_SYNC) {
-		if (!bits_available(reader, 16))
-			return 1;
-
-		if (*index % 512)
-			return -EINVAL;
-
-		return 0;
-	}
-
 	if (offset > *index)
 		return -EINVAL;
 
@@ -209,6 +199,18 @@ static int ds_loop(struct bitreader *reader, uint8_t *output, size_t length, siz
 				if (ret < 0)
 					return ret;
 
+				if (offset == OFFSET_SYNC) {
+					if (!bits_available(reader, 16)) {
+						*result_length = index;
+						return 0;
+					}
+
+					if (index % 512)
+						return -EINVAL;
+
+					break;
+				}
+
 				offset += OFFSET_LARGE_OFFSET;
 			} else {
 				ret = ds_get_offset(reader, &offset, OFFSET_MEDIUM_BITS);
@@ -221,11 +223,6 @@ static int ds_loop(struct bitreader *reader, uint8_t *output, size_t length, siz
 			ret = ds_decode(reader, output, &index, length, offset);
 			if (ret < 0)
 				return ret;
-
-			if (ret == 1) {
-				*result_length = index;	/* ds_decode did not change index in this case */
-				return 0;
-			}
 
 			break;
 		default:

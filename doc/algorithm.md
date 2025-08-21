@@ -51,6 +51,10 @@ otherwise it is followed by a 8 bit offset. Both offsets need an additional offs
 (320 for the 12 bit offset and 64 for the 8 bit offset). The offset value is then followed by a length
 value.
 
+A raw 12-bit offset value with all bits set indicates that 512 bytes of output data should have been
+produced so far. It can also indicate that decoding of the bitstream should stop if fewer than 16 bits
+remain. In both cases said offset has no associated length value.
+
 #### Length value
 
 The length value starts with a number of zero bits (between 0 and 8), terminated by a one bit. This the base value,
