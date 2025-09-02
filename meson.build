@@ -2,7 +2,7 @@ project(
     'libdeds',
     'c',
     license : 'GPL-2.0-or-later',
-    version : '1.2.1',
+    version : '1.3.0',
     default_options: ['b_ndebug=if-release'],
 )
 
